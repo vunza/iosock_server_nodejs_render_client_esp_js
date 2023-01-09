@@ -1,0 +1,94 @@
+
+====================
+COMANDOS ESSENCIAIS:
+====================
+
+1 - git pull origin main -- Sincroniza Repositorio Local com o Remoto(github)
+
+
+=======
+SNIPTS:
+=======
+
+/*** ORIGIN CORS ***/
+
+const io = require('socket.io')(server,{cors:{
+    origin:'*:*',
+    credentials: true
+}}
+
+
+/*** nodejs servidor api***/
+
+const micros = require("./arqsjson/micros.json");
+app.get('/arqsjson', (requisicao, resposta) => {
+	return resposta.json(micros);
+});
+
+
+
+/*** esp8266 cliente da api nodejs ***/
+
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClient.h>
+
+const char* ssid = "Welwitschia Mirabilis";
+const char* password = "tigre?2018@";
+/*const char* ssid = "TPLINK";
+const char* password = "gregorio@2012";*/
+WiFiClientSecure client;
+HTTPClient sender;
+
+/////////////
+// setup() //
+/////////////
+void setup(){
+
+  Serial.begin(115200); // serial monitoring
+  
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED){
+      delay(200);
+      Serial.print(".");
+  }
+
+  Serial.println(F("\nConnected to WIFI!"));
+
+  const char *host_url = "https://nodejs-h07r.onrender.com/arqsjson";
+  uint16_t porta = 443;
+
+  client.setInsecure();
+  client.connect(host_url, porta);
+  
+  if (sender.begin(client, host_url)){
+    
+    uint16_t httpCode = sender.GET();
+
+    if (httpCode > 0) 
+    {
+      if (httpCode == HTTP_CODE_OK){
+        String payload = sender.getString();        
+        Serial.println(payload);
+      }
+      else{
+        Serial.printf("HTTP-Error: %s\n", sender.errorToString(httpCode).c_str());
+      }
+    }
+  }
+  else{
+    Serial.println(F("Other HTTP error"));
+    sender.end();
+  }
+}
+
+
+////////////
+// loop() //
+////////////
+void loop(){
+  
+}
+

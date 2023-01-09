@@ -1,0 +1,12 @@
+[
+    {
+        "Nome":"ESP8266",
+        "CPU":"80MHz",
+        "RAM":"128KB"
+    },
+    {
+        "Nome":"ESP12E",
+        "CPU":"160MHz",
+        "RAM":"512KB"
+    }
+]
