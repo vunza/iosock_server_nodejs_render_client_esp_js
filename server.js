@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
-const socketio = require('socket.io');
+//const socketio = require('socket.io');
+
 const app = express();
 
 
@@ -27,7 +28,12 @@ app.get('/arqsjson', (requisicao, resposta) => {
  
 
 // WebSockets
-const io = socketio(servidor);
+//const io = socketio(servidor);
+
+const io = require('socket.io')(servidor,{cors:{
+    origin:'*:*',
+    credentials: true
+}});
 
 // Processa evetnto 'connection'
 io.on('connection', (socket_info) => {
