@@ -32,6 +32,7 @@ app.get('/arqsjson', (requisicao, resposta) => {
 
 const io = require('socket.io')(servidor,{cors:{
     origin:'*:*',
+    methods: ["GET", "POST"],
     credentials: true
 }});
 
